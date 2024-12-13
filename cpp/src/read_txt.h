@@ -9,6 +9,8 @@
 namespace aoc
 {
 
+auto read_txt_into_string(const std::filesystem::path& filename) -> std::string;
+
 template <typename T>
 auto read_txt(const std::filesystem::path& filename) -> std::vector<T>;
 

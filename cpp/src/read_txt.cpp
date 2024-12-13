@@ -109,6 +109,12 @@ struct Line_converter<std::vector<T>>
     }
 };
 
+auto read_txt_into_string(const std::filesystem::path& filename) -> std::string
+{
+    auto file = Mmap_file{filename.c_str()};
+    return std::string{file.contents()};
+}
+
 template <typename T>
 auto read_txt(const std::filesystem::path& filename) -> std::vector<T>
 {

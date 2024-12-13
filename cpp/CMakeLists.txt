@@ -13,3 +13,6 @@ target_link_libraries(day1 aoc2024)
 
 add_executable(day2 src/day2.cpp)
 target_link_libraries(day2 aoc2024)
+
+add_executable(day3 src/day3.cpp)
+target_link_libraries(day3 aoc2024)
