@@ -1,5 +1,6 @@
 #include "read_txt.h"
 
+#include <array>
 #include <ranges>
 #include <spanstream>
 #include <string_view>
@@ -73,6 +74,41 @@ struct Line_converter<std::pair<T1, T2>>
     }
 };
 
+template <typename T, std::size_t N>
+struct Line_converter<std::array<T, N>>
+{
+    static auto operator()(const auto& line) -> std::array<T, N>
+    {
+        auto ret = std::array<T, N>{};
+        auto linestream = std::ispanstream{line};
+        for (auto& val : ret)
+        {
+            if (!(linestream >> val))
+            {
+                throw std::runtime_error{"Bad input line: " + std::string(line.begin(), line.end())};
+            }
+        }
+        return ret;
+    }
+};
+
+template <typename T>
+struct Line_converter<std::vector<T>>
+{
+    static auto operator()(const auto& line) -> std::vector<T>
+    {
+        auto ret = std::vector<T>{};
+        ret.reserve(64);
+        auto linestream = std::ispanstream{line};
+        T val;
+        while (linestream >> val)
+        {
+            ret.emplace_back(val);
+        }
+        return ret;
+    }
+};
+
 template <typename T>
 auto read_txt(const std::filesystem::path& filename) -> std::vector<T>
 {
@@ -89,5 +125,7 @@ template auto read_txt<std::string>(const std::filesystem::path& filename) -> st
 template auto read_txt<std::pair<int, int>>(const std::filesystem::path& filename) -> std::vector<std::pair<int, int>>;
 template auto read_txt<std::pair<long, long>>(const std::filesystem::path& filename) -> std::vector<std::pair<long, long>>;
 template auto read_txt<std::pair<double, double>>(const std::filesystem::path& filename) -> std::vector<std::pair<double, double>>;
+template auto read_txt<std::array<double, 5>>(const std::filesystem::path& filename) -> std::vector<std::array<double, 5>>;
+template auto read_txt<std::vector<int>>(const std::filesystem::path& filename) -> std::vector<std::vector<int>>;
 
 } // namespace aoc
